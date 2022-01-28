@@ -1,20 +1,22 @@
-import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import React, { Component } from 'react';
-import getImages from '../../services/api';
-import Audio from '../Spinner/Spinner';
+import TailSpin from '../Spinner/Spinner';
 import propTypes from 'prop-types';
+import { getImages } from '../../services/api';
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+// import { toast } from 'react-toastify';
 
 class ImageGallery extends Component {
   state = {
-    images: null,
+    images: [],
     isHidden: false,
     page: 1,
     loading: false,
   };
+
   componentDidUpdate(prevProps) {
-    if (prevProps.pictureTag !== this.props.pictureTag) {
+    if (prevProps.search !== this.props.search) {
       this.setState({ lading: true });
-      getImages(this.props.pictureTag, 1)
+      getImages(this.props.search, 1)
         .then(images =>
           this.setState(prev => ({
             images,
@@ -26,9 +28,10 @@ class ImageGallery extends Component {
         .finally(() => this.setState({ loading: false }));
     }
   }
+
   onClickBtn = () => {
     this.setState({ loading: true });
-    getImages(this.props.pictureTag, this.state.page)
+    getImages(this.props.search, this.state.page)
       .then(images =>
         this.setState(prev => ({
           images: [...prev.images, ...images],
@@ -46,16 +49,17 @@ class ImageGallery extends Component {
         }),
       );
   };
+
   render() {
+    const { loading, images, isHidden } = this.state;
+
     return (
       <div className="ImageContainer">
-        {this.state.loading && <Audio />}
+        {loading && <TailSpin />}
         <ul className="ImageGallery">
-          {this.state.images && (
-            <ImageGalleryItem pictures={this.state.images} />
-          )}
+          {images && <ImageGalleryItem pictures={images} />}
         </ul>
-        {this.state.isHidden && (
+        {isHidden && (
           <div className="Btn-wrapper">
             <button type="button" className="Button" onClick={this.onClickBtn}>
               Load more
@@ -69,5 +73,5 @@ class ImageGallery extends Component {
 export default ImageGallery;
 
 ImageGallery.propTypes = {
-  pictureTag: propTypes.string,
+  search: propTypes.string,
 };

@@ -6,18 +6,18 @@ import ImageGallery from './Components/ImageGallery/ImageGallery';
 
 class App extends Component {
   state = {
-    pictureTag: '',
+    search: '',
   };
 
-  handleFormSubmit = pictureTag => {
-    this.setState({ pictureTag });
+  handleFormSubmit = search => {
+    this.setState({ search });
   };
 
   render() {
     return (
       <>
         <Searchbar onSubmit={this.handleFormSubmit} />
-        <ImageGallery pictureTag={this.state.pictureTag} />
+        <ImageGallery search={this.state.search} />
         <ToastContainer />
       </>
     );

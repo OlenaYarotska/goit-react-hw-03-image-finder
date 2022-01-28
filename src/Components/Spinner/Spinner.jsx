@@ -1,4 +1,4 @@
-import { Audio } from 'react-loader-spinner';
+import { TailSpin } from 'react-loader-spinner';
 import React, { Component } from 'react';
 
 class Spinner extends Component {
@@ -6,7 +6,7 @@ class Spinner extends Component {
     return (
       <div>
         {' '}
-        <Audio
+        <TailSpin
           type="TailSpin"
           color="black"
           height={100}
