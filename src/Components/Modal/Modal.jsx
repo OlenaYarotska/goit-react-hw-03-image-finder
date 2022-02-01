@@ -2,8 +2,6 @@ import propTypes from 'prop-types';
 import React, { Component } from 'react';
 
 class Modal extends Component {
-  state = {};
-
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
@@ -26,7 +24,7 @@ class Modal extends Component {
     return (
       <div className="Overlay" onClick={this.handleBackdropClick}>
         <div className="Modal">
-          <img src={this.props.picture} alt="" />
+          <img src={this.props.children} alt="" />
         </div>
       </div>
     );
