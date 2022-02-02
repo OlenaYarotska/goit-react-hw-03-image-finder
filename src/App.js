@@ -54,7 +54,7 @@ class App extends Component {
   onLoading = value => {
     this.setState({ loading: value });
   };
-  handleSearch = search => {
+  handleSubmitForm = search => {
     this.setState({ search });
   };
 
@@ -67,6 +67,7 @@ class App extends Component {
       toggleModal,
       onLoading,
       largeImageURL,
+      largePicture,
       tags,
     } = this.state;
     return (
@@ -76,13 +77,13 @@ class App extends Component {
         <ImageGallery
           picture={search}
           onClose={toggleModal}
-          onFetch={this.largePicture}
+          onFetch={largePicture}
           onLoading={onLoading}
         />
 
         {loading && <TailSpin />}
         {showModal && (
-          <Modal onClose={this.toggleModal}>
+          <Modal onClose={toggleModal}>
             <img src={largeImageURL} alt={tags} />
             <button type="button" onClick={toggleModal} />
           </Modal>
