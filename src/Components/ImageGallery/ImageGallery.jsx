@@ -100,11 +100,11 @@ import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import { toast } from 'react-toastify';
 import Button from '../Button/Button';
 
-function endOfGallery(page, totalHits, loading) {
+function endOfGallery(page, totalHits, onLoading) {
   const totalImgs = totalHits / 12;
 
   if (page !== 1 && page > totalImgs) {
-    loading(false);
+    onLoading(false);
     return toast('End of gallery');
   }
 }
@@ -122,7 +122,7 @@ class ImageGallery extends Component {
     const prevPicture = prevProps.picture;
     const nextPicture = this.props.picture;
     const { totalHits, page } = this.state;
-    const { loading } = this.props;
+    const { onLoading } = this.props;
 
     if (prevPicture !== nextPicture) {
       this.setState({ page: 1, images: [] });
@@ -131,12 +131,12 @@ class ImageGallery extends Component {
       (prevPicture !== nextPicture && page === 1) ||
       prevState.page !== page
     ) {
-      loading(true);
+      onLoading(true);
 
-      await fetchImages(nextPicture, loading, page)
+      await fetchImages(nextPicture, onLoading, page)
         .then(gallery => {
           if (gallery.hits.length === 0) {
-            loading(false);
+            onLoading(false);
 
             return Promise.reject(new Error(toast('Nothing is found')));
           }
@@ -151,8 +151,8 @@ class ImageGallery extends Component {
             top: document.documentElement.scrollHeight,
             behavior: 'smooth',
           });
-          endOfGallery(page, totalHits, loading);
-          loading(false);
+          endOfGallery(page, totalHits, onLoading);
+          onLoading(false);
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }

@@ -51,7 +51,7 @@ class App extends Component {
   largePicture = (largeImageURL, tags) => {
     this.setState({ largeImageURL, tags });
   };
-  onLoading = value => {
+  setLoading = value => {
     this.setState({ loading: value });
   };
   handleSubmitForm = search => {
@@ -62,23 +62,22 @@ class App extends Component {
     const {
       loading,
       showModal,
-      handleSubmitForm,
       search,
       toggleModal,
-      onLoading,
+      setLoading,
       largeImageURL,
       largePicture,
       tags,
     } = this.state;
     return (
       <>
-        <Searchbar onSubmit={handleSubmitForm} />
+        <Searchbar onSubmit={this.handleSubmitForm} />
 
         <ImageGallery
           picture={search}
           onClose={toggleModal}
           onFetch={largePicture}
-          onLoading={onLoading}
+          onLoading={setLoading}
         />
 
         {loading && <TailSpin />}
