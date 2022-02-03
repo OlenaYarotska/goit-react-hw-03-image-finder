@@ -133,10 +133,10 @@ class ImageGallery extends Component {
     ) {
       onLoading(true);
 
-      await fetchImages(nextPicture, onLoading, page)
+      await fetchImages(nextPicture, this.props.onLoading, page)
         .then(gallery => {
           if (gallery.hits.length === 0) {
-            onLoading(false);
+            this.onLoading(false);
 
             return Promise.reject(new Error(toast('Nothing is found')));
           }
@@ -151,8 +151,8 @@ class ImageGallery extends Component {
             top: document.documentElement.scrollHeight,
             behavior: 'smooth',
           });
-          endOfGallery(page, totalHits, onLoading);
-          onLoading(false);
+          endOfGallery(page, totalHits, this.props.onLoading);
+          this.onLoading(false);
         })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }

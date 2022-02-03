@@ -55,7 +55,7 @@ class App extends Component {
     this.setState({ loading: value });
   };
   handleSubmitForm = search => {
-    this.setState({ search });
+    this.setState({ searchQuery: search });
   };
 
   render() {
