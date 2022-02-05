@@ -55,36 +55,26 @@ class App extends Component {
     this.setState({ loading: value });
   };
   handleSubmitForm = search => {
-    this.setState({ searchQuery: search });
+    this.setState({ search });
   };
 
   render() {
-    const {
-      loading,
-      showModal,
-      search,
-      toggleModal,
-      setLoading,
-      largeImageURL,
-      largePicture,
-      tags,
-    } = this.state;
+    const { loading, showModal, search, largeImageURL, tags } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSubmitForm} />
 
         <ImageGallery
           picture={search}
-          onClose={toggleModal}
-          onFetch={largePicture}
-          onLoading={setLoading}
+          onClose={this.toggleModal}
+          onFetch={this.largePicture}
+          onLoading={this.setLoading}
         />
 
         {loading && <TailSpin />}
         {showModal && (
-          <Modal onClose={toggleModal}>
+          <Modal onClose={this.toggleModal}>
             <img src={largeImageURL} alt={tags} />
-            <button type="button" onClick={toggleModal} />
           </Modal>
         )}
         <ToastContainer />
@@ -92,5 +82,4 @@ class App extends Component {
     );
   }
 }
-
 export default App;

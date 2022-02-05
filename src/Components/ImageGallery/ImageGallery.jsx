@@ -3,14 +3,15 @@
 // import propTypes from 'prop-types';
 // import { getImages } from '../../services/api';
 // import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
-// // import { toast } from 'react-toastify';
-// const perPage = 12;
+// // import { toast } from 'react-toas
+
 // class ImageGallery extends Component {
 //   state = {
 //     images: [],
 //     isHidden: false,
 //     page: 1,
 //     loading: false,
+
 //   };
 
 //   componentDidUpdate(prevProps) {
@@ -22,7 +23,6 @@
 //             images,
 //             isHidden: true,
 //             page: prev.page + 1,
-//             totalHits: 0,
 //           })),
 //         )
 //         .catch(error => console.log(error))
@@ -34,24 +34,23 @@
 //     this.setState({ loading: true });
 //     getImages(this.props.search, this.state.page)
 
-//       .then(images =>
+//       .then(images => {
 //         this.setState(prev => ({
 //           images: [...prev.images, ...images],
 //           isHidden: true,
 //           page: prev.page + 1,
 //           loading: true,
-
-//         })),
-//       )
-//       .catch(error => console.log(error))
-//       .finally(
-//         () => this.setState({ loading: false }),
-//         window.scrollTo({
-//           top: document.documentElement.scrollHeight,
-//           behavior: 'smooth',
-//         }),
-//       );
-//   };
+//         }))
+//           .catch(error => console.log(error))
+//           .finally(
+//             () => this.setState({ loading: false }),
+//             window.scrollTo({
+//               top: document.documentElement.scrollHeight,
+//               behavior: 'smooth',
+//             }),
+//           );
+//       })
+//   }
 // // hasNextPage = this.totalHits > this.page * perPage;
 // //   hasImages = (images) => {
 // //     if (images.length > 0) {
@@ -61,7 +60,7 @@
 // //     console.log(this.hasImages)
 // //   }
 //   render() {
-//     const { loading, images, } = this.state;
+//     const { loading, images, isHidden } = this.state;
 
 //     return (
 //       <div className="ImageContainer">
@@ -69,7 +68,8 @@
 //         <ul className="ImageGallery">
 //           {images && <ImageGalleryItem pictures={images} />}
 //         </ul>
-//         {images.length !== 0 &&  (
+//         {isHidden
+//           (
 //           <div className="Btn-wrapper">
 //             <button type="button" className="Button" onClick={this.onClickBtn}>
 //                 Load more
@@ -86,19 +86,13 @@
 //   search: propTypes.string,
 // };
 
-// / export default ImageGallery;
-
-// ImageGallery.propTypes = {
-//   pictures: propTypes.array,
-//   onClickImg:propTypes.func,
-// };
-
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import { fetchImages } from '../../services/api';
-import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+// import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import { toast } from 'react-toastify';
 import Button from '../Button/Button';
+import GalleryMarkup from './ImageGalleryView';
 
 function endOfGallery(page, totalHits, onLoading) {
   const totalImgs = totalHits / 12;
@@ -133,10 +127,10 @@ class ImageGallery extends Component {
     ) {
       onLoading(true);
 
-      await fetchImages(nextPicture, this.props.onLoading, page)
+      await fetchImages(nextPicture, onLoading, page)
         .then(gallery => {
           if (gallery.hits.length === 0) {
-            this.onLoading(false);
+            onLoading(false);
 
             return Promise.reject(new Error(toast('Nothing is found')));
           }
@@ -154,7 +148,12 @@ class ImageGallery extends Component {
           endOfGallery(page, totalHits, this.props.onLoading);
           this.onLoading(false);
         })
-        .catch(error => this.setState({ error, status: 'rejected' }));
+        .catch(error =>
+          this.setState({
+            error,
+            status: 'rejected',
+          }),
+        );
     }
   }
   onClickBtn = () => {
@@ -162,38 +161,38 @@ class ImageGallery extends Component {
   };
 
   render() {
-    const { images, onClose, onFetch, totalHits } = this.state;
-
+    const { images, totalHits } = this.state;
+    const { onClose, onFetch } = this.props;
+    // if (status === 'idle') {
+    //   return <p>Type your search request</p>
+    // }
+    // if (status === 'rejected') {
+    //   return toast.error('Nothing is found')
+    // }
+    // if (status === 'resolved') {
     return (
       <div className="ImageContainer">
-        <ul className="ImageGallery">
-          {images.map(({ id, webformatURL, tags, largeImageURL }) => (
-            <ImageGalleryItem
-              key={id}
-              webformatURL={webformatURL}
-              largeImageURL={largeImageURL}
-              tags={tags}
-              onClose={onClose}
-              onFetch={onFetch}
-            />
-          ))}
-        </ul>
+        <GalleryMarkup
+          pictureGallery={images}
+          onClose={onClose}
+          onFetch={onFetch}
+        />
 
-        <div className="Btn-wrapper">
-          {totalHits > images.length && (
-            <Button type="button" className="Button" onClick={this.onClickBtn}>
-              Load more
-            </Button>
-          )}
-        </div>
+        {totalHits > images.length && (
+          <div className="Btn-wrapper">
+            <Button onClick={this.onClickBtn} />
+          </div>
+        )}
       </div>
     );
   }
 }
+// }
+
 export default ImageGallery;
 
 ImageGallery.propTypes = {
-  imagesGallery: propTypes.string,
+  imageGallery: propTypes.string,
   onClose: propTypes.func,
   onFetch: propTypes.func,
 };

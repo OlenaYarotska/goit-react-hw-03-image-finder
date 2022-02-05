@@ -61,7 +61,7 @@ const ImageGalleryItem = ({
         className="ImageGalleryItem-image"
         src={webformatURL}
         alt={tags}
-        // onClick={() => onClickImg(largeImageURL)}
+        // onClick={() => onClickBtn(largeImageURL)}
       />
     </li>
   );

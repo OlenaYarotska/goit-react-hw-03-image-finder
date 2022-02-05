@@ -7,6 +7,7 @@
 //     .then(res => res.json())
 //     .then(data => data.hits);
 // };
+
 import { toast } from 'react-toastify';
 const KEY = '24368394-ccc0003f8191eae78e1f7d910';
 const BaseUrl = 'https://pixabay.com/api/';

@@ -23,9 +23,7 @@ class Modal extends Component {
   render() {
     return (
       <div className="Overlay" onClick={this.handleBackdropClick}>
-        <div className="Modal">
-          <img src={this.props.children} alt="" />
-        </div>
+        <div className="Modal">{this.props.children}</div>
       </div>
     );
   }

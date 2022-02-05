@@ -50,21 +50,23 @@ import { toast } from 'react-toastify';
 
 class Searchbar extends Component {
   state = {
-    search: '',
+    inputValue: '',
   };
 
-  handleChange = evt => this.setState({ search: evt.target.value });
+  handleChange = evt => {
+    const { inputValue, value } = evt.target;
+    this.setState({ [inputValue]: value.toLowerCase() });
+  };
 
   handleSubmit = evt => {
     evt.preventDefault();
-    const { search } = this.state;
-    if (search.trim() === '') {
+    const { inputValue } = this.state;
+    if (inputValue.trim() === '') {
       toast.error('Please type something');
       return;
     }
-    this.props.onSubmit(search);
-    evt.target.reset();
-    // this.setState({ search: '' });
+    this.props.onSubmit(inputValue);
+    this.setState({ inputValue: '' });
   };
 
   render() {
@@ -80,7 +82,7 @@ class Searchbar extends Component {
               type="text"
               autoComplete="off"
               autoFocus
-              value={this.state.search}
+              value={this.state.inputValue}
               placeholder="Search images and photos"
               onChange={this.handleChange}
               className="SearchForm-input"
