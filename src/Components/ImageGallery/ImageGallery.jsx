@@ -163,13 +163,7 @@ class ImageGallery extends Component {
   render() {
     const { images, totalHits } = this.state;
     const { onClose, onFetch } = this.props;
-    // if (status === 'idle') {
-    //   return <p>Type your search request</p>
-    // }
-    // if (status === 'rejected') {
-    //   return toast.error('Nothing is found')
-    // }
-    // if (status === 'resolved') {
+
     return (
       <div className="ImageContainer">
         <GalleryMarkup
@@ -187,7 +181,6 @@ class ImageGallery extends Component {
     );
   }
 }
-// }
 
 export default ImageGallery;
 
