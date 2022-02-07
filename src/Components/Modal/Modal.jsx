@@ -1,7 +1,4 @@
-import propTypes from 'prop-types';
 import React, { Component } from 'react';
-import { createPortal } from 'react-dom';
-const modal = document.querySelector('#modal-root');
 
 class Modal extends Component {
   componentDidMount() {
@@ -14,24 +11,20 @@ class Modal extends Component {
 
   handleKeyDown = evt => {
     if (evt.code === 'Escape') {
-      this.props.onClose(evt);
+      this.props.onClose();
     }
   };
   handleBackdropClick = evt => {
     if (evt.currentTarget === evt.target) {
-      this.props.onClose(evt);
+      this.props.onClose();
     }
   };
   render() {
-    return createPortal(
+    return (
       <div className="Overlay" onClick={this.handleBackdropClick}>
         <div className="Modal">{this.props.children}</div>
-      </div>,
-      modal,
+      </div>
     );
   }
 }
 export default Modal;
-Modal.propTypes = {
-  picture: propTypes.string,
-};

@@ -1,8 +1,8 @@
 import propTypes from 'prop-types';
-const Button = ({ onClick }) => {
+const Button = ({ onClickBtn }) => {
   return (
     <div className="Btn-wrapper">
-      <button type="button" className="Button" onClick={onClick}>
+      <button type="button" className="Button" onClick={onClickBtn}>
         Load more
       </button>
     </div>

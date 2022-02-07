@@ -1,38 +1,12 @@
-// import React, { Component } from 'react';
-// import { ToastContainer } from 'react-toastify';
-// import 'react-toastify/dist/ReactToastify.css';
-// import Searchbar from './Components/Searchbar/Searchbar';
-// import ImageGallery from './Components/ImageGallery/ImageGallery';
-
-// class App extends Component {
-//   state = {
-//     search: '',
-//   };
-
-//   handleFormSubmit = search => {
-//     this.setState({ search });
-//   };
-
-//   render() {
-//     return (
-//       <>
-//         <Searchbar onSubmit={this.handleFormSubmit} />
-//         <ImageGallery search={this.state.search} />
-//         <ToastContainer />
-//       </>
-//     );
-//   }
-// }
-
-// export default App;
-
 import React, { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Searchbar from './Components/Searchbar/Searchbar';
 import ImageGallery from './Components/ImageGallery/ImageGallery';
-import TailSpin from './Components/Spinner/Spinner';
+import Spinner from './Components/Spinner/Spinner';
 import Modal from './Components/Modal/Modal';
+import { fetchImages } from './services/api';
+import Button from './Components/Button/Button';
 
 class App extends Component {
   state = {
@@ -40,41 +14,78 @@ class App extends Component {
     loading: false,
     showModal: false,
     largeImageURL: '',
-    tags: '',
+    error: null,
+    page: 1,
+    images: [],
+    gallery: 0,
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+  async componentDidUpdate(_, prevState) {
+    if (prevState.search !== this.state.search) {
+      this.onClickButton();
+    }
+  }
+  onClickButton = () => {
+    if (!this.state.search) return;
+
+    this.setState({ loading: true });
+    const { page, search } = this.state;
+    fetchImages({ page, search })
+      .then(({ hits }) => {
+        this.setState(prevState => ({
+          images: [...prevState.images, ...hits],
+          gallery: hits.length,
+          page: prevState.page + 1,
+        }));
+
+        if (this.state.gallery === 0) {
+          toast.error('Nothing is found');
+        }
+
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      })
+      .catch(error => console.log(error))
+      .finally(() => {
+        this.setState({ loading: false });
+      });
   };
-  largePicture = (largeImageURL, tags) => {
-    this.setState({ largeImageURL, tags });
+
+  openModal = largeImageURL => {
+    this.setState({ bigPicture: largeImageURL, showModal: true });
   };
-  setLoading = value => {
-    this.setState({ loading: value });
+  closeModal = () => {
+    this.setState({ bigPicture: '', showModal: false });
   };
-  handleSubmitForm = search => {
-    this.setState({ search });
+
+  handleSubmitForm = inputValue => {
+    this.setState({
+      images: [],
+      error: null,
+      search: inputValue,
+      page: 1,
+    });
   };
 
   render() {
-    const { loading, showModal, search, largeImageURL, tags } = this.state;
+    const { loading, showModal, bigPicture, images, gallery } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleSubmitForm} />
 
-        <ImageGallery
-          picture={search}
-          onClose={this.toggleModal}
-          onFetch={this.largePicture}
-          onLoading={this.setLoading}
-        />
+        <ImageGallery images={images} onClickImg={this.openModal} />
+        {gallery !== 0 && !loading && (
+          <div className="Btn-wrapper">
+            <Button onClickBtn={this.onClickButton} />
+          </div>
+        )}
 
-        {loading && <TailSpin />}
+        {loading && <Spinner />}
         {showModal && (
-          <Modal onClose={this.toggleModal}>
-            <img src={largeImageURL} alt={tags} />
+          <Modal onClose={this.closeModal}>
+            <img src={bigPicture} alt="" />
           </Modal>
         )}
         <ToastContainer />
